@@ -39,13 +39,20 @@ struct ContentView: View {
                     Text("Expenses")
                 }
             }
-            .navigationTitle("Personal Finance")
+            .navigationTitle(monthTitle)
             .toolbar {
                 ToolbarItem(placement: .navigationBarLeading) {
                     Button {
                         viewModel.isPresentingImporter = true
                     } label: {
                         Label("Import CSV", systemImage: "tray.and.arrow.down")
+                    }
+                }
+                ToolbarItem(placement: .navigationBarLeading) {
+                    Button {
+                        viewModel.prepareExport(expenses: filteredSortedExpenses)
+                    } label: {
+                        Label("Export CSV", systemImage: "tray.and.arrow.up")
                     }
                 }
                 ToolbarItem(placement: .navigationBarLeading) {
@@ -119,6 +126,11 @@ struct ContentView: View {
             }, message: {
                 Text(viewModel.importMessage ?? "Import finished.")
             })
+            .alert("Export", isPresented: $viewModel.isShowingExportResult, actions: {
+                Button("OK", role: .cancel) {}
+            }, message: {
+                Text(viewModel.exportMessage ?? "Export finished.")
+            })
             .confirmationDialog(
                 "Advance Installments",
                 isPresented: $viewModel.isShowingAdvanceConfirmation,
@@ -131,11 +143,26 @@ struct ContentView: View {
             } message: {
                 Text("This will increment paid installments for every expense that is not fully paid.")
             }
+            .sheet(isPresented: $viewModel.isShowingShareSheet, onDismiss: {
+                viewModel.exportURL = nil
+            }) {
+                if let url = viewModel.exportURL {
+                    ShareSheet(items: [url])
+                }
+            }
         }
     }
 
     private var totalAmount: Decimal {
         expenses.reduce(Decimal.zero) { $0 + $1.totalAmount }
+    }
+
+    private var monthTitle: String {
+        let formatter = DateFormatter()
+        formatter.locale = Locale.current
+        formatter.dateFormat = "LLLL"
+        let month = formatter.string(from: Date())
+        return "\(month) Expenses"
     }
 
     private var remainingAmount: Decimal {

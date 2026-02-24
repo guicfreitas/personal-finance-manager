@@ -51,6 +51,10 @@ final class ContentViewModel: ObservableObject {
     @Published var importMessage: String?
     @Published var isShowingImportResult = false
     @Published var isShowingAdvanceConfirmation = false
+    @Published var isShowingShareSheet = false
+    @Published var exportURL: URL?
+    @Published var exportMessage: String?
+    @Published var isShowingExportResult = false
     @Published var sortOption: SortOption = .remainingInstallments
     @Published var filterOption: FilterOption = .all
 
@@ -75,5 +79,18 @@ final class ContentViewModel: ObservableObject {
         }
         isShowingImportResult = true
         pendingImportURL = nil
+    }
+
+    func prepareExport(expenses: [Expense]) {
+        let filename = "personal-finance-\(Date().timeIntervalSince1970).csv"
+        let url = FileManager.default.temporaryDirectory.appendingPathComponent(filename)
+        do {
+            try CSVExporter.exportExpenses(expenses, to: url)
+            exportURL = url
+            isShowingShareSheet = true
+        } catch {
+            exportMessage = error.localizedDescription
+            isShowingExportResult = true
+        }
     }
 }
