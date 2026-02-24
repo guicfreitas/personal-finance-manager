@@ -13,10 +13,12 @@ final class MonthlyExpense {
     var title: String
     var amount: Decimal
     var date: Date
+    var sourceId: String?
 
-    init(title: String, amount: Decimal, date: Date) {
+    init(title: String, amount: Decimal, date: Date, sourceId: String? = nil) {
         self.title = title
         self.amount = amount
         self.date = date
+        self.sourceId = sourceId
     }
 }

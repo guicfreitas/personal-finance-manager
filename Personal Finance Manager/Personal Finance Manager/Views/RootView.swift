@@ -48,7 +48,7 @@ struct RootView: View {
 
     private func handleDeepLink(_ url: URL) {
         guard let link = QuickAddLink(url: url) else { return }
-        if let identifier = link.identifier, isDuplicate(identifier: identifier) {
+        if let identifier = link.identifier, hasExistingExpense(with: identifier) {
             quickAddMessage = "Already added."
             selectedTab = .budget
             return
@@ -56,21 +56,19 @@ struct RootView: View {
         let expense = MonthlyExpense(
             title: link.title,
             amount: link.amount,
-            date: Date()
+            date: Date(),
+            sourceId: link.identifier
         )
         modelContext.insert(expense)
         selectedTab = .budget
         quickAddMessage = "Added \(link.title)"
-        if let identifier = link.identifier {
-            markDuplicate(identifier: identifier)
+    }
+
+    private func hasExistingExpense(with identifier: String) -> Bool {
+        let predicate = #Predicate<MonthlyExpense> { expense in
+            expense.sourceId == identifier
         }
-    }
-
-    private func isDuplicate(identifier: String) -> Bool {
-        UserDefaults.standard.bool(forKey: "quick-add-\(identifier)")
-    }
-
-    private func markDuplicate(identifier: String) {
-        UserDefaults.standard.set(true, forKey: "quick-add-\(identifier)")
+        let descriptor = FetchDescriptor<MonthlyExpense>(predicate: predicate)
+        return (try? modelContext.fetch(descriptor))?.isEmpty == false
     }
 }
