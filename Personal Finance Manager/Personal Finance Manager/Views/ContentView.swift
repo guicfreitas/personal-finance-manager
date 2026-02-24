@@ -151,6 +151,7 @@ struct ContentView: View {
                 }
             }
         }
+        .dismissKeyboardOnTap()
     }
 
     private var totalAmount: Decimal {

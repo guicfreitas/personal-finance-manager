@@ -13,6 +13,9 @@ struct Personal_Finance_ManagerApp: App {
     var sharedModelContainer: ModelContainer = {
         let schema = Schema([
             Expense.self,
+            BudgetSettings.self,
+            FixedExpense.self,
+            MonthlyExpense.self,
         ])
         let modelConfiguration = ModelConfiguration(schema: schema, isStoredInMemoryOnly: false)
 
@@ -25,7 +28,7 @@ struct Personal_Finance_ManagerApp: App {
 
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            RootView()
         }
         .modelContainer(sharedModelContainer)
     }
