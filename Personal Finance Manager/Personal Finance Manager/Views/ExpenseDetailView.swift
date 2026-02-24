@@ -17,8 +17,13 @@ struct ExpenseDetailView: View {
         Form {
             Section("Details") {
                 TextField("Title", text: $expense.title)
-                CurrencyField(title: "Total Amount", value: $expense.totalAmount)
-                CurrencyField(title: "Installment Value", value: $expense.installmentValue)
+                CurrencyField(title: "Total Amount", value: $expense.totalAmount, placeholder: "Total Amount")
+                HStack {
+                    Text("Installment Value")
+                    Spacer()
+                    Text(expense.installmentValue, format: .currency(code: Locale.current.currency?.identifier ?? "USD"))
+                        .foregroundStyle(.secondary)
+                }
             }
 
             Section("Installments") {
@@ -35,6 +40,9 @@ struct ExpenseDetailView: View {
                         Spacer()
                         Text("\(expense.totalInstallments)")
                     }
+                }
+                .onChange(of: expense.totalInstallments) { _, _ in
+                    recalculateInstallmentValue()
                 }
                 HStack {
                     Text("Remaining Installments")
@@ -61,5 +69,16 @@ struct ExpenseDetailView: View {
             }
         }
         .navigationTitle("Expense")
+        .onChange(of: expense.totalAmount) { _, _ in
+            recalculateInstallmentValue()
+        }
+    }
+
+    private func recalculateInstallmentValue() {
+        guard expense.totalInstallments > 0 else {
+            expense.installmentValue = .zero
+            return
+        }
+        expense.installmentValue = expense.totalAmount / Decimal(expense.totalInstallments)
     }
 }

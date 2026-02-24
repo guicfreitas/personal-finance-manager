@@ -10,13 +10,14 @@ import SwiftUI
 struct CurrencyField: View {
     let title: String
     @Binding var value: Decimal
+    var placeholder: String? = nil
 
     @State private var text: String = ""
     @State private var isUpdating = false
     @FocusState private var isFocused: Bool
 
     var body: some View {
-        TextField(title, text: $text)
+        TextField(placeholder ?? title, text: $text)
             .keyboardType(.numberPad)
             .focused($isFocused)
             .onAppear {
