@@ -11,9 +11,12 @@ struct ExpenseRow: View {
     let expense: Expense
 
     var body: some View {
+        let isFinished = expense.paidInstallments >= expense.totalInstallments
+
         VStack(alignment: .leading, spacing: 6) {
             Text(expense.title)
                 .font(.headline)
+                .foregroundStyle(isFinished ? .green : .primary)
 
             HStack {
                 Text("Paid \(expense.paidInstallments)/\(expense.totalInstallments)")
@@ -21,7 +24,7 @@ struct ExpenseRow: View {
                 Text(expense.installmentValue, format: .currency(code: Locale.current.currency?.identifier ?? "USD"))
             }
             .font(.subheadline)
-            .foregroundStyle(.secondary)
+            .foregroundStyle(isFinished ? .green : .secondary)
 
             HStack {
                 Text("Remaining: \(expense.remainingInstallments)")
@@ -29,7 +32,7 @@ struct ExpenseRow: View {
                 Text(expense.remainingAmount, format: .currency(code: Locale.current.currency?.identifier ?? "USD"))
             }
             .font(.footnote)
-            .foregroundStyle(.secondary)
+            .foregroundStyle(isFinished ? .green : .secondary)
         }
     }
 }
