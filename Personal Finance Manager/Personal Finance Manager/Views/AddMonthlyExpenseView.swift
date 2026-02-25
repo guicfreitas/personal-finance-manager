@@ -15,6 +15,7 @@ struct AddMonthlyExpenseView: View {
     @State private var title = ""
     @State private var amount = Decimal.zero
     @State private var date = Date()
+    @State private var category: ExpenseCategory = .other
 
     var body: some View {
         NavigationStack {
@@ -23,6 +24,12 @@ struct AddMonthlyExpenseView: View {
                     TextField("Title", text: $title)
                     CurrencyField(title: "Amount", value: $amount)
                     DatePicker("Date", selection: $date, displayedComponents: .date)
+                    Picker("Category", selection: $category) {
+                        ForEach(ExpenseCategory.allCases) { item in
+                            Label(item.title, systemImage: item.systemImage)
+                                .tag(item)
+                        }
+                    }
                 }
             }
             .navigationTitle("New Monthly")
@@ -35,7 +42,8 @@ struct AddMonthlyExpenseView: View {
                         let expense = MonthlyExpense(
                             title: title.trimmingCharacters(in: .whitespacesAndNewlines),
                             amount: amount,
-                            date: date
+                            date: date,
+                            category: category
                         )
                         modelContext.insert(expense)
                         dismiss()

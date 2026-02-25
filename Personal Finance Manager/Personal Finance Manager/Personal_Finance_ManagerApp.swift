@@ -17,12 +17,20 @@ struct Personal_Finance_ManagerApp: App {
             FixedExpense.self,
             MonthlyExpense.self,
         ])
-        let modelConfiguration = ModelConfiguration(schema: schema, isStoredInMemoryOnly: false)
+        let modelConfiguration = ModelConfiguration("PersonalFinance", schema: schema, isStoredInMemoryOnly: false)
 
         do {
             return try ModelContainer(for: schema, configurations: [modelConfiguration])
         } catch {
-            fatalError("Could not create ModelContainer: \(error)")
+            // Reset store if schema changed and migration fails.
+            let appSupport = FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask)[0]
+            let modelContainerDir = appSupport.appendingPathComponent("ModelContainer")
+            try? FileManager.default.removeItem(at: modelContainerDir)
+            do {
+                return try ModelContainer(for: schema, configurations: [modelConfiguration])
+            } catch {
+                fatalError("Could not create ModelContainer: \(error)")
+            }
         }
     }()
 

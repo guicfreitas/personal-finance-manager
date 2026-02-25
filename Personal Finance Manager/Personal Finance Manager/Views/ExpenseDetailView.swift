@@ -18,6 +18,12 @@ struct ExpenseDetailView: View {
             Section("Details") {
                 TextField("Title", text: $expense.title)
                 CurrencyField(title: "Total Amount", value: $expense.totalAmount, placeholder: "Total Amount")
+                Picker("Category", selection: $expense.category) {
+                    ForEach(ExpenseCategory.allCases) { item in
+                        Label(item.title, systemImage: item.systemImage)
+                            .tag(item)
+                    }
+                }
                 HStack {
                     Text("Installment Value")
                     Spacer()

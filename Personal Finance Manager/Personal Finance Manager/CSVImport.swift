@@ -66,7 +66,8 @@ struct CSVImporter {
                 installmentValue: installmentValue,
                 paidInstallments: paidInstallments,
                 totalInstallments: totalInstallments,
-                lastUpdated: lastUpdated
+                lastUpdated: lastUpdated,
+                category: .other
             )
             modelContext.insert(expense)
             inserted += 1

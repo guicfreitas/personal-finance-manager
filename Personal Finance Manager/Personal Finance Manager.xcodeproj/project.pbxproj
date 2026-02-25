@@ -29,22 +29,9 @@
 		79A61CB52F4D28AF0084FACF /* Personal Finance ManagerUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Personal Finance ManagerUITests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
-/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
-		79A61E8F2F4DFF110084FACF /* Exceptions for "Personal Finance Manager" folder in "Personal Finance Manager" target */ = {
-			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
-			membershipExceptions = (
-				"Personal-Finance-Manager-Info.plist",
-			);
-			target = 79A61C9B2F4D28AC0084FACF /* Personal Finance Manager */;
-		};
-/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
-
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		79A61C9E2F4D28AC0084FACF /* Personal Finance Manager */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
-			exceptions = (
-				79A61E8F2F4DFF110084FACF /* Exceptions for "Personal Finance Manager" folder in "Personal Finance Manager" target */,
-			);
 			path = "Personal Finance Manager";
 			sourceTree = "<group>";
 		};

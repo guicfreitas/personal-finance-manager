@@ -14,6 +14,8 @@ struct AddFixedExpenseView: View {
 
     @State private var title = ""
     @State private var amount = Decimal.zero
+    @State private var category: ExpenseCategory = .other
+    @State private var repeatsMonthly = true
 
     var body: some View {
         NavigationStack {
@@ -21,6 +23,13 @@ struct AddFixedExpenseView: View {
                 Section("Fixed Expense") {
                     TextField("Title", text: $title)
                     CurrencyField(title: "Amount", value: $amount)
+                    Picker("Category", selection: $category) {
+                        ForEach(ExpenseCategory.allCases) { item in
+                            Label(item.title, systemImage: item.systemImage)
+                                .tag(item)
+                        }
+                    }
+                    Toggle("Repeat Each Month", isOn: $repeatsMonthly)
                 }
             }
             .navigationTitle("New Fixed")
@@ -32,7 +41,9 @@ struct AddFixedExpenseView: View {
                     Button("Save") {
                         let expense = FixedExpense(
                             title: title.trimmingCharacters(in: .whitespacesAndNewlines),
-                            amount: amount
+                            amount: amount,
+                            category: category,
+                            repeatsMonthly: repeatsMonthly
                         )
                         modelContext.insert(expense)
                         dismiss()

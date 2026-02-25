@@ -16,6 +16,7 @@ final class Expense {
     var paidInstallments: Int
     var totalInstallments: Int
     var lastUpdated: Date
+    var categoryRaw: String
 
     init(
         title: String,
@@ -23,7 +24,8 @@ final class Expense {
         installmentValue: Decimal,
         paidInstallments: Int,
         totalInstallments: Int,
-        lastUpdated: Date = Date()
+        lastUpdated: Date = Date(),
+        category: ExpenseCategory = .other
     ) {
         self.title = title
         self.totalAmount = totalAmount
@@ -31,6 +33,7 @@ final class Expense {
         self.paidInstallments = paidInstallments
         self.totalInstallments = totalInstallments
         self.lastUpdated = lastUpdated
+        self.categoryRaw = category.rawValue
     }
 
     var remainingInstallments: Int {
@@ -39,5 +42,10 @@ final class Expense {
 
     var remainingAmount: Decimal {
         installmentValue * Decimal(remainingInstallments)
+    }
+
+    var category: ExpenseCategory {
+        get { ExpenseCategory(rawValue: categoryRaw) ?? .other }
+        set { categoryRaw = newValue.rawValue }
     }
 }

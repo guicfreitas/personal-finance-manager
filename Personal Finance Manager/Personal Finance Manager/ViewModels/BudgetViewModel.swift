@@ -15,6 +15,7 @@ final class BudgetViewModel: ObservableObject {
     @Published var isPresentingAddFixed = false
     @Published var isPresentingAddMonthly = false
     @Published var didRequestNotifications = false
+    @Published var isShowingClearNonRepeatingConfirmation = false
 
     func ensureSettings(modelContext: ModelContext) -> BudgetSettings {
         if let existing = try? modelContext.fetch(FetchDescriptor<BudgetSettings>()).first {

@@ -17,6 +17,7 @@ struct AddExpenseView: View {
     @State private var paidInstallments = 0
     @State private var totalInstallments = 1
     @State private var lastUpdated = Date()
+    @State private var category: ExpenseCategory = .other
 
     var body: some View {
         NavigationStack {
@@ -24,6 +25,12 @@ struct AddExpenseView: View {
                 Section("Details") {
                     TextField("Title", text: $title)
                     CurrencyField(title: "Total Amount", value: $totalAmount, placeholder: "Total Amount")
+                    Picker("Category", selection: $category) {
+                        ForEach(ExpenseCategory.allCases) { item in
+                            Label(item.title, systemImage: item.systemImage)
+                                .tag(item)
+                        }
+                    }
                     HStack {
                         Text("Installment Value")
                         Spacer()
@@ -78,7 +85,8 @@ struct AddExpenseView: View {
             installmentValue: installmentValue,
             paidInstallments: paidInstallments,
             totalInstallments: totalInstallments,
-            lastUpdated: lastUpdated
+            lastUpdated: lastUpdated,
+            category: category
         )
         modelContext.insert(expense)
     }

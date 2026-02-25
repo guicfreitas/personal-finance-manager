@@ -43,7 +43,7 @@ struct BudgetView: View {
                 Section("Fixed Expenses") {
                     ForEach(fixedExpenses) { expense in
                         HStack {
-                            Text(expense.title)
+                            Label(expense.title, systemImage: expense.category.systemImage)
                             Spacer()
                             Text(expense.amount, format: .currency(code: Locale.current.currency?.identifier ?? "USD"))
                         }
@@ -60,7 +60,7 @@ struct BudgetView: View {
                 Section("Monthly Expenses") {
                     ForEach(monthlyExpenses) { expense in
                         VStack(alignment: .leading, spacing: 4) {
-                            Text(expense.title)
+                            Label(expense.title, systemImage: expense.category.systemImage)
                             HStack {
                                 Text(expense.date, style: .date)
                                     .foregroundStyle(.secondary)
@@ -101,6 +101,27 @@ struct BudgetView: View {
             }
             .sheet(isPresented: $viewModel.isPresentingAddMonthly) {
                 AddMonthlyExpenseView()
+            }
+            .toolbar {
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    Button(role: .destructive) {
+                        viewModel.isShowingClearNonRepeatingConfirmation = true
+                    } label: {
+                        Label("Clear Monthly", systemImage: "trash")
+                    }
+                }
+            }
+            .confirmationDialog(
+                "Clear Entries",
+                isPresented: $viewModel.isShowingClearNonRepeatingConfirmation,
+                titleVisibility: .visible
+            ) {
+                Button("Clear Non-Repeating Fixed + Monthly", role: .destructive) {
+                    clearNonRepeatingAndMonthly()
+                }
+                Button("Cancel", role: .cancel) {}
+            } message: {
+                Text("This will delete all monthly expenses and fixed expenses that are not set to repeat.")
             }
         }
         .dismissKeyboardOnTap()
@@ -152,6 +173,15 @@ struct BudgetView: View {
     private func deleteMonthlyExpenses(offsets: IndexSet) {
         for index in offsets {
             modelContext.delete(monthlyExpenses[index])
+        }
+    }
+
+    private func clearNonRepeatingAndMonthly() {
+        for expense in monthlyExpenses {
+            modelContext.delete(expense)
+        }
+        for expense in fixedExpenses where expense.repeatsMonthly == false {
+            modelContext.delete(expense)
         }
     }
 }

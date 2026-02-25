@@ -14,9 +14,13 @@ struct ExpenseRow: View {
         let isFinished = expense.paidInstallments >= expense.totalInstallments
 
         VStack(alignment: .leading, spacing: 6) {
-            Text(expense.title)
-                .font(.headline)
-                .foregroundStyle(isFinished ? .green : .primary)
+            HStack(spacing: 8) {
+                Image(systemName: expense.category.systemImage)
+                    .foregroundStyle(isFinished ? .green : .secondary)
+                Text(expense.title)
+                    .font(.headline)
+                    .foregroundStyle(isFinished ? .green : .primary)
+            }
 
             HStack {
                 Text("Paid \(expense.paidInstallments)/\(expense.totalInstallments)")

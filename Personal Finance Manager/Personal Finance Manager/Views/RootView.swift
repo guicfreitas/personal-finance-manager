@@ -57,7 +57,8 @@ struct RootView: View {
             title: link.title,
             amount: link.amount,
             date: Date(),
-            sourceId: link.identifier
+            sourceId: link.identifier,
+            category: .other
         )
         modelContext.insert(expense)
         selectedTab = .budget
